@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>disable</Nullable>
+        <UseWPF>true</UseWPF>
+        <NeutralLanguage>en</NeutralLanguage>
+        <ApplicationIcon>Resources\Images\applicationIcon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EconomySimulator.BusinessLogic\EconomySimulator.BusinessLogic.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+      <PackageReference Include="Mars.Life.Simulations" Version="4.4.1" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+      <PackageReference Include="WPF-UI" Version="2.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Views\Pages" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Localization\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\Localization\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

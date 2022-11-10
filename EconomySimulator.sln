@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EconomySimulator.WPF", "EconomySimulator.WPF\EconomySimulator.WPF.csproj", "{DF6C13F5-A781-4ED5-AA16-1441E9D3CF70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EconomySimulator.BusinessLogic", "EconomySimulator.BusinessLogic\EconomySimulator.BusinessLogic.csproj", "{20CC38D9-D9CC-471F-8522-2A4808921A6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF6C13F5-A781-4ED5-AA16-1441E9D3CF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF6C13F5-A781-4ED5-AA16-1441E9D3CF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF6C13F5-A781-4ED5-AA16-1441E9D3CF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF6C13F5-A781-4ED5-AA16-1441E9D3CF70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20CC38D9-D9CC-471F-8522-2A4808921A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20CC38D9-D9CC-471F-8522-2A4808921A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20CC38D9-D9CC-471F-8522-2A4808921A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20CC38D9-D9CC-471F-8522-2A4808921A6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

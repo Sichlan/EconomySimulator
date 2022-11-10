@@ -1,0 +1,12 @@
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\bin\Debug\net6.0\EconomySimulator.BusinessLogic.deps.json
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\bin\Debug\net6.0\EconomySimulator.BusinessLogic.dll
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\bin\Debug\net6.0\EconomySimulator.BusinessLogic.pdb
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.csproj.AssemblyReference.cache
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.AssemblyInfoInputs.cache
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.AssemblyInfo.cs
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.csproj.CoreCompileInputs.cache
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.dll
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\refint\EconomySimulator.BusinessLogic.dll
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\EconomySimulator.BusinessLogic.pdb
+G:\_Data\_Code\RiderProjects\EconomySimulator\EconomySimulator.BusinessLogic\obj\Debug\net6.0\ref\EconomySimulator.BusinessLogic.dll
