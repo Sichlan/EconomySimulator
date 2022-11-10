@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using EconomySimulator.WPF.Views.Pages;
+using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
@@ -33,7 +35,15 @@ public partial class MainWindowViewModel : ObservableObject
     {
         return new ObservableCollection<INavigationControl>()
         {
-
+#if DEBUG
+            new NavigationItem()
+            {
+                Content = Resources.Localization.Resources.TestViewMenuTitle,
+                PageTag = "debug",
+                Icon = SymbolRegular.Box24,
+                PageType = typeof(TestView)
+            }
+#endif
         };
     }
 
@@ -41,7 +51,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         return new ObservableCollection<INavigationControl>()
         {
-
+            new NavigationItem()
+            {
+                Content = Resources.Localization.Resources.SettingsViewMenuTitle,
+                PageTag = "settings",
+                Icon = SymbolRegular.Settings24,
+                PageType = typeof(SettingsView)
+            }
         };
     }
 
@@ -49,6 +65,11 @@ public partial class MainWindowViewModel : ObservableObject
     {
         return new ObservableCollection<MenuItem>()
         {
+            new MenuItem
+            {
+                Header = "Home",
+                Tag = "tray_home"
+            }
 
         };
     }

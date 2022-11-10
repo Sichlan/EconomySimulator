@@ -21,4 +21,16 @@
     <data name="ApplicationTitle" xml:space="preserve">
         <value>Economy Simulator</value>
     </data>
+    <data name="TestViewTitle" xml:space="preserve">
+        <value>Test Page</value>
+    </data>
+    <data name="SettingsViewTitle" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="SettingsViewMenuTitle" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="TestViewMenuTitle" xml:space="preserve">
+        <value>Test</value>
+    </data>
 </root>

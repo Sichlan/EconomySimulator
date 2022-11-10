@@ -1,4 +1,5 @@
-﻿using EconomySimulator.WPF.Views.Windows;
+﻿using EconomySimulator.WPF.Views.Pages;
+using EconomySimulator.WPF.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wpf.Ui.Mvvm.Contracts;
@@ -12,6 +13,8 @@ public static class AddViewsHostBuilderExtension
         hostBuilder.ConfigureServices(services =>
         {
             services.AddScoped<INavigationWindow, MainWindow>();
+            services.AddScoped<SettingsView>();
+            services.AddScoped<TestView>();
         });
 
         return hostBuilder;

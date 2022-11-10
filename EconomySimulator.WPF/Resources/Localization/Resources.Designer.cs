@@ -21,7 +21,7 @@ namespace EconomySimulator.WPF.Resources.Localization {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace EconomySimulator.WPF.Resources.Localization {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EconomySimulator.WPF.Resources.Localization.Resources", typeof(Resources).Assembly);
@@ -50,7 +50,7 @@ namespace EconomySimulator.WPF.Resources.Localization {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,9 +62,45 @@ namespace EconomySimulator.WPF.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Economy Simulator.
         /// </summary>
-        internal static string ApplicationTitle {
+        public static string ApplicationTitle {
             get {
                 return ResourceManager.GetString("ApplicationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string SettingsViewMenuTitle {
+            get {
+                return ResourceManager.GetString("SettingsViewMenuTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string SettingsViewTitle {
+            get {
+                return ResourceManager.GetString("SettingsViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string TestViewMenuTitle {
+            get {
+                return ResourceManager.GetString("TestViewMenuTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Page.
+        /// </summary>
+        public static string TestViewTitle {
+            get {
+                return ResourceManager.GetString("TestViewTitle", resourceCulture);
             }
         }
     }
