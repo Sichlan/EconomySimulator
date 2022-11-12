@@ -37,7 +37,7 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
     }
 
     [RelayCommand]
-    private void OnChangeTheme(string parameter)
+    private void ChangeTheme(string parameter)
     {
         switch (parameter)
         {
