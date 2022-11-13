@@ -13,6 +13,7 @@ public static class AddViewModelsHostBuilderExtension
             services.AddScoped<MainWindowViewModel>();
             services.AddScoped<SettingsViewModel>();
             services.AddScoped<TestViewModel>();
+            services.AddScoped<SimulationMainViewModel>();
         });
 
         return hostBuilder;

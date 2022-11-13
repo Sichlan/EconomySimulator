@@ -15,6 +15,7 @@ public static class AddViewsHostBuilderExtension
             services.AddScoped<INavigationWindow, MainWindow>();
             services.AddScoped<SettingsView>();
             services.AddScoped<TestView>();
+            services.AddScoped<SimulationMainView>();
         });
 
         return hostBuilder;

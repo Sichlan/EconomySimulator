@@ -4,11 +4,10 @@ using Wpf.Ui.Common.Interfaces;
 
 namespace EconomySimulator.WPF.Views.Pages;
 
-public partial class SettingsView : INavigableView<SettingsViewModel>
+public partial class SimulationMainView : INavigableView<SimulationMainViewModel>
 {
-    public SettingsViewModel ViewModel { get; }
-    
-    public SettingsView(SettingsViewModel viewModel)
+    public SimulationMainViewModel ViewModel { get; }
+    public SimulationMainView(SimulationMainViewModel viewModel)
     {
         ViewModel = viewModel;
         InitializeComponent();

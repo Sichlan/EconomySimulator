@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using EconomySimulator.WPF.ViewModels;
+using EconomySimulator.WPF.Views.Pages;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -19,6 +20,8 @@ public partial class MainWindow : INavigationWindow
         SetPageService(pageService);
         
         navigationService.SetNavigationControl(RootNavigation);
+
+        Loaded += (_, _) => Navigate(typeof(SimulationMainView));
     }
 
     /// <summary>

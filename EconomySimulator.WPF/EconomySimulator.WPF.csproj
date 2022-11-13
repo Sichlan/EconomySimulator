@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EconomySimulator.BusinessLogic\EconomySimulator.BusinessLogic.csproj" />
+      <ProjectReference Include="..\EconomySimulator.CustomControls\EconomySimulator.CustomControls.csproj" />
     </ItemGroup>
 
     <ItemGroup>

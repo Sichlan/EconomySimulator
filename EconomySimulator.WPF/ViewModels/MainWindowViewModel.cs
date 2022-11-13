@@ -35,6 +35,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         return new ObservableCollection<INavigationControl>()
         {
+            new NavigationItem()
+            {
+                Content = "Simulation",
+                PageTag = "simulation",
+                Icon = SymbolRegular.Globe24,
+                PageType = typeof(SimulationMainView)
+            },
 #if DEBUG
             new NavigationItem()
             {
@@ -42,7 +49,7 @@ public partial class MainWindowViewModel : ObservableObject
                 PageTag = "debug",
                 Icon = SymbolRegular.Box24,
                 PageType = typeof(TestView)
-            }
+            },
 #endif
         };
     }
