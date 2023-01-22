@@ -10,7 +10,7 @@ namespace EconomySimulator.WPF.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    private bool _isInitialized = false;
+    private bool _isInitialized;
 
     [ObservableProperty] private ObservableCollection<INavigationControl> _navigationItems = new();
     [ObservableProperty] private ObservableCollection<INavigationControl> _navigationFooter = new();
@@ -33,9 +33,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     private ObservableCollection<INavigationControl> GenerateNavigationItems()
     {
-        return new ObservableCollection<INavigationControl>()
+        return new ObservableCollection<INavigationControl>
         {
-            new NavigationItem()
+            new NavigationItem
             {
                 Content = "Simulation",
                 PageTag = "simulation",
@@ -43,7 +43,7 @@ public partial class MainWindowViewModel : ObservableObject
                 PageType = typeof(SimulationMainView)
             },
 #if DEBUG
-            new NavigationItem()
+            new NavigationItem
             {
                 Content = Resources.Localization.Resources.TestViewMenuTitle,
                 PageTag = "debug",
@@ -56,9 +56,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     private ObservableCollection<INavigationControl> GenerateNavigationFooter()
     {
-        return new ObservableCollection<INavigationControl>()
+        return new ObservableCollection<INavigationControl>
         {
-            new NavigationItem()
+            new NavigationItem
             {
                 Content = Resources.Localization.Resources.SettingsViewMenuTitle,
                 PageTag = "settings",
@@ -70,7 +70,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private ObservableCollection<MenuItem> GenerateTrayMenuItems()
     {
-        return new ObservableCollection<MenuItem>()
+        return new ObservableCollection<MenuItem>
         {
             new MenuItem
             {

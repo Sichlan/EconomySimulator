@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:converters="clr-namespace:EconomySimulator.WPF.Converters"
+             xmlns:map="clr-namespace:EconomySimulator.WPF.ViewModels.Map"
+             xmlns:controls="clr-namespace:EconomySimulator.WPF.Views.Controls"
+             xmlns:viewModels="clr-namespace:EconomySimulator.WPF.ViewModels"
              DispatcherUnhandledException="OnDispatcherUnhandledException"
              Exit="OnExit"
              Startup="OnStartup">
@@ -14,6 +17,13 @@
             </ResourceDictionary.MergedDictionaries>
         
             <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+            
+            <DataTemplate DataType="{x:Type map:MapMainViewModel}">
+                <controls:MapMainView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:NewSimulationConfigurationViewModel}">
+                <controls:NewSimulationConfigurationView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

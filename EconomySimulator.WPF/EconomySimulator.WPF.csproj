@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net6.0-windows</TargetFramework>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <NeutralLanguage>en</NeutralLanguage>
         <ApplicationIcon>Resources\Images\applicationIcon.ico</ApplicationIcon>
@@ -16,7 +16,8 @@
 
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-      <PackageReference Include="Mars.Life.Simulations" Version="4.4.1" />
+      <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
+      <PackageReference Include="Mars.Life.Simulations" Version="4.5.1" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
       <PackageReference Include="WPF-UI" Version="2.0.3" />
     </ItemGroup>

@@ -3,7 +3,8 @@ using Wpf.Ui.Common.Interfaces;
 
 namespace EconomySimulator.WPF.ViewModels;
 
-public partial class TestViewModel : ObservableObject, INavigationAware
+[ObservableObject]
+public partial class TestViewModel : INavigationAware
 {
     public void OnNavigatedTo()
     {

@@ -46,7 +46,6 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
                     break;
 
                 Theme.Apply(ThemeType.Light);
-                CurrentTheme = ThemeType.Light;
 
                 break;
 
@@ -55,9 +54,9 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
                     break;
 
                 Theme.Apply(ThemeType.Dark);
-                CurrentTheme = ThemeType.Dark;
 
                 break;
         }
+        CurrentTheme = Theme.GetAppTheme();
     }
 }

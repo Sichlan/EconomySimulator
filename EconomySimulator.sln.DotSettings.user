@@ -1,4 +1,10 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=cac26218_002D4898_002D404f_002Da2d6_002Defebb0d8cf92/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SaveSimulationConfiguration_CorrectPath_SaveFileTo" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1::net6.0::EconomySimulator.BusinessLogicTests.Services.SimulationServices.SimulationContainerServiceTests.SaveSimulationConfiguration_CorrectPath_SaveFileTo&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1::net6.0::EconomySimulator.BusinessLogicTests.Services.FileServices.ZipFileServiceTests.CreateTestZipFile&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=EconomySimulator_002EWPF_002FResources_002FLocalization_002FResources/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean></wpf:ResourceDictionary>

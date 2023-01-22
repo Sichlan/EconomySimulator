@@ -5,6 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:EconomySimulator.WPF.Views.Pages"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:customControls="clr-namespace:EconomySimulator.CustomControls;assembly=EconomySimulator.CustomControls"
+      xmlns:res="clr-namespace:EconomySimulator.WPF.Resources.Localization"
+      xmlns:enums="clr-namespace:EconomySimulator.WPF.Resources.Enums"
       mc:Ignorable="d"
       Title="SimulationMainView" d:DesignHeight="450" d:DesignWidth="800"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -13,19 +16,87 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <Menu Grid.Row="0">
+
+        <!--menu list-->
+        <Menu Grid.Row="0" Margin="0">
             <ui:MenuItem Header="Configuration" SymbolIcon="Settings24">
-                <ui:MenuItem Header="New" SymbolIcon="New20" Command="{Binding ViewModel.NewSimulationConfigurationCommand}"/>
-                <ui:MenuItem Header="Save" SymbolIcon="Save20" Command="{Binding ViewModel.SaveSimulationConfigurationCommand}"/>
-                <ui:MenuItem Header="Load" SymbolIcon="Open20" Command="{Binding ViewModel.LoadSimulationConfigurationCommand}"/>
+                <ui:MenuItem Header="New" SymbolIcon="New20"
+                             Command="{Binding ViewModel.NewSimulationConfigurationCommand}" />
+                <ui:MenuItem Header="Save" SymbolIcon="Save20"
+                             Command="{Binding ViewModel.SaveSimulationConfigurationCommand}" />
+                <ui:MenuItem Header="Load" SymbolIcon="Open20"
+                             Command="{Binding ViewModel.LoadSimulationConfigurationCommand}" />
             </ui:MenuItem>
         </Menu>
         
         <!--card control-->
+        <ContentControl Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Content="{Binding ViewModel.MapMainViewModel}" />
         
         <!--play button and stuff for simulation control-->
+        <Grid Grid.Row="2" Margin="5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <ui:CardControl Margin="5,0" Padding="5" Command="{Binding ViewModel.StopSimulationCommand}" Icon="Stop16"/>
+                <ui:CardControl Margin="5,0" Padding="5" Command="{Binding ViewModel.RewindSimulationCommand}" Icon="Rewind16"/>
+                <ui:CardControl Margin="5,0" Padding="5" Command="{Binding ViewModel.PlaySimulationCommand}" Icon="Play16"/>
+                <ui:CardControl Margin="5,0" Padding="5" Command="{Binding ViewModel.FastForwardSimulationCommand}" Icon="FastForward16"/>
+                <ui:CardControl Margin="5,0" Padding="5" Command="{Binding ViewModel.RestartSimulationCommand}" Icon="ArrowCounterclockwise16"/>
+            </StackPanel>
+        </Grid>
+        
+        <!--popup to display form for new configuration-->
+        <customControls:ModalPopup Grid.Row="0" Grid.RowSpan="3" IsOpen="{Binding ViewModel.IsNewConfigurationOpen}" Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="5">
+                <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <GroupBox Header="{x:Static res:Resources.GisFilesGroupTitle}" MinHeight="50" MinWidth="50" Margin="5">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition MinWidth="200"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="{x:Static res:Resources.GisCellsLayerName}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="{x:Static res:Resources.GisRiversLayerName}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="{x:Static res:Resources.GisRoutesLayerName}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="{x:Static res:Resources.GisMarkersLayerName}"/>
+                                
+                                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" IsReadOnly="True" Text="{Binding ViewModel.NewSimulationConfigurationViewModel.GisCellsLayerFilePath}"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True" Text="{Binding ViewModel.NewSimulationConfigurationViewModel.GisRiversLayerFilePath}"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True" Text="{Binding ViewModel.NewSimulationConfigurationViewModel.GisRoutesLayerFilePath}"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True" Text="{Binding ViewModel.NewSimulationConfigurationViewModel.GisMarkersLayerFilePath}"/>
+                                
+                                <ui:Button Grid.Row="0" Grid.Column="2" Margin="5" Icon="Edit24" Command="{Binding ViewModel.NewSimulationConfigurationViewModel.SelectFilePathCommand}" CommandParameter="{x:Static enums:GisLayerTypeEnum.Cells}"/>
+                                <ui:Button Grid.Row="1" Grid.Column="2" Margin="5" Icon="Edit24" Command="{Binding ViewModel.NewSimulationConfigurationViewModel.SelectFilePathCommand}" CommandParameter="{x:Static enums:GisLayerTypeEnum.Rivers}"/>
+                                <ui:Button Grid.Row="2" Grid.Column="2" Margin="5" Icon="Edit24" Command="{Binding ViewModel.NewSimulationConfigurationViewModel.SelectFilePathCommand}" CommandParameter="{x:Static enums:GisLayerTypeEnum.Routes}"/>
+                                <ui:Button Grid.Row="3" Grid.Column="2" Margin="5" Icon="Edit24" Command="{Binding ViewModel.NewSimulationConfigurationViewModel.SelectFilePathCommand}" CommandParameter="{x:Static enums:GisLayerTypeEnum.Markers}"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                    
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <ui:Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="Cancel"
+                                   Command="{Binding ViewModel.CancelClosePopupCommand}" Margin="5"/>
+                        <ui:Button VerticalAlignment="Center" HorizontalAlignment="Center" Content="Save"
+                                   Command="{Binding ViewModel.SaveClosePopupCommand}" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </customControls:ModalPopup>
     </Grid>
 </ui:UiPage>

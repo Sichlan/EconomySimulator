@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 using EconomySimulator.WPF.ExtensionMethods.HostBuilders;
 using Microsoft.Extensions.Hosting;
@@ -59,7 +58,7 @@ namespace EconomySimulator.WPF
         /// </summary>
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }

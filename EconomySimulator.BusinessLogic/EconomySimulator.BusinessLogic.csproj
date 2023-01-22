@@ -3,11 +3,24 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Mars.Life.Simulations" Version="4.4.1" />
+      <PackageReference Include="Mars.Life.Simulations" Version="4.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="PresentationCore">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.11\PresentationCore.dll</HintPath>
+      </Reference>
+      <Reference Include="PresentationFramework">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\6.0.11\PresentationFramework.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\LogService" />
     </ItemGroup>
 
 </Project>

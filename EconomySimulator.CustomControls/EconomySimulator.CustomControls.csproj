@@ -6,4 +6,19 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Wpf.Ui">
+      <HintPath>C:\Users\hysch\.nuget\packages\wpf-ui\2.0.3\lib\net6.0-windows7.0\Wpf.Ui.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mars.Life.Simulations" Version="4.5.1" />
+    <PackageReference Include="WPF-UI" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EconomySimulator.BusinessLogic\EconomySimulator.BusinessLogic.csproj" />
+  </ItemGroup>
+
 </Project>

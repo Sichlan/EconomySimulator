@@ -13,7 +13,10 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Round"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        ResizeMode="CanResizeWithGrip"
+        d:DesignWidth="800"
+        d:DesignHeight="450">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,7 +39,7 @@
                     FocusOnLeftClick="True"
                     Icon="pack://application:,,,/Resources/Images/applicationIcon-256.png"
                     MenuOnRightClick="True"
-                    TooltipText="UiDesktopApp2">
+                    TooltipText="{Binding Title, Mode=OneWay}">
                     <ui:NotifyIcon.Menu>
                         <ContextMenu ItemsSource="{Binding ViewModel.TrayMenuItems, Mode=OneWay}" />
                     </ui:NotifyIcon.Menu>
@@ -58,5 +61,11 @@
                 <Frame x:Name="RootFrame" />
             </Border>
         </Grid>
+        
+        <ui:Dialog Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Name="RootDialog"
+                   DialogHeight="450"
+                   DialogWidth="900">
+            
+        </ui:Dialog>
     </Grid>
 </ui:UiWindow>

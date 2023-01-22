@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EconomySimulator.BusinessLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EconomySimulator.CustomControls", "EconomySimulator.CustomControls\EconomySimulator.CustomControls.csproj", "{C5213EEB-BF43-4E2B-B7CA-EBADFCEE25F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EconomySimulator.BusinessLogicTests", "EconomySimulator.BusinessLogicTests\EconomySimulator.BusinessLogicTests.csproj", "{E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C5213EEB-BF43-4E2B-B7CA-EBADFCEE25F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5213EEB-BF43-4E2B-B7CA-EBADFCEE25F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5213EEB-BF43-4E2B-B7CA-EBADFCEE25F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4EDF6AF-6907-4DB6-99CD-F4909FB30AE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

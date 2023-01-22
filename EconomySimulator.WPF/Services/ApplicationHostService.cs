@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using EconomySimulator.WPF.Views;
 using EconomySimulator.WPF.Views.Windows;
 using Microsoft.Extensions.Hosting;
 using Wpf.Ui.Mvvm.Contracts;

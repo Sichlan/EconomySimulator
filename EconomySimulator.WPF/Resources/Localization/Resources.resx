@@ -33,4 +33,31 @@
     <data name="TestViewMenuTitle" xml:space="preserve">
         <value>Test</value>
     </data>
+    <data name="SaveDialogTitle" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="OpenDialogTitle" xml:space="preserve">
+        <value>Open</value>
+    </data>
+    <data name="SaveConfigurationFileFilter" xml:space="preserve">
+        <value>json files (*.json)|*.json</value>
+    </data>
+    <data name="DefaultSaveConfigurationFileName" xml:space="preserve">
+        <value>NewConfig.zip</value>
+    </data>
+    <data name="GisCellsLayerName" xml:space="preserve">
+        <value>Cells</value>
+    </data>
+    <data name="GisRiversLayerName" xml:space="preserve">
+        <value>Rivers</value>
+    </data>
+    <data name="GisRoutesLayerName" xml:space="preserve">
+        <value>Routes</value>
+    </data>
+    <data name="GisMarkersLayerName" xml:space="preserve">
+        <value>Markers</value>
+    </data>
+    <data name="GisFilesGroupTitle" xml:space="preserve">
+        <value>GIS files</value>
+    </data>
 </root>
