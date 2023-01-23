@@ -9,7 +9,6 @@ using EconomySimulator.BusinessLogic.Services.SimulationServices;
 using Mars.Components.Layers;
 using Mars.Core.Executor.Implementation;
 using Mars.Interfaces.Layers;
-using Newtonsoft.Json;
 
 namespace EconomySimulator.WPF.ViewModels.Map;
 

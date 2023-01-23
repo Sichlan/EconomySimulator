@@ -47,4 +47,9 @@ public interface ISimulationContainerService
     /// Initializes the simulation and generates a <see cref="ModelDescription"/>, <see cref="ISimulation"/> and <see cref="SimulationWorkflowState"/>.
     /// </summary>
     void InitSimulation();
+
+    /// <summary>
+    /// Terminates the current simulation.
+    /// </summary>
+    void AnnihilateSimulation();
 }

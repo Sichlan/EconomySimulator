@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
+using EconomySimulator.BusinessLogic.Services.SimulationServices;
 using EconomySimulator.WPF.Resources.Enums;
 using Mars.Interfaces.Model;
 using Mars.Interfaces.Model.Options;
@@ -21,17 +21,21 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
     [ObservableProperty] private string? _gisMarkersLayerFilePath;
     
     private readonly string _outputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\EconomySimulator\\Configurations\\Active";
+    private readonly ISimulationContainerService _simulationContainerService;
 
     public RelayCommand<GisLayerTypeEnum> SelectFilePathCommand { get; }
 
-    public NewSimulationConfigurationViewModel()
+    public NewSimulationConfigurationViewModel(ISimulationContainerService simulationContainerService)
     {
+        _simulationContainerService = simulationContainerService;
         SelectFilePathCommand = new RelayCommand<GisLayerTypeEnum>(ExecuteSelectFilePathCommand);
     }
 
     [Localizable(false)]
     public void PrepareFiles()
     {
+        _simulationContainerService.AnnihilateSimulation();
+        
         if (Directory.Exists(_outputDirectory))
             Directory.Delete(_outputDirectory, true);
         
@@ -49,7 +53,7 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
             || string.IsNullOrWhiteSpace(GisRiversLayerFilePath)
             || string.IsNullOrWhiteSpace(GisRoutesLayerFilePath)
             || string.IsNullOrWhiteSpace(GisMarkersLayerFilePath))
-            throw new FileNotFoundException($"A layer's path was empty or null!" +
+            throw new FileNotFoundException("A layer's path was empty or null!" +
                                             $"\n cells: {GisCellsLayerFilePath}" +
                                             $"\n rivers: {GisRiversLayerFilePath}" +
                                             $"\n routes: {GisRoutesLayerFilePath}" +
@@ -59,7 +63,7 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
             || !File.Exists(GisRiversLayerFilePath)
             || !File.Exists(GisRoutesLayerFilePath)
             || !File.Exists(GisMarkersLayerFilePath))
-            throw new FileNotFoundException($"A layer's file could not be found!" +
+            throw new FileNotFoundException("A layer's file could not be found!" +
                                             $"\n cells: {GisCellsLayerFilePath}" +
                                             $"\n rivers: {GisRiversLayerFilePath}" +
                                             $"\n routes: {GisRoutesLayerFilePath}" +

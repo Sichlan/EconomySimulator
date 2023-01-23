@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Mars.Components.Layers;
 using Mars.Interfaces.Layers;
-using Point = System.Drawing.Point;
 
 namespace EconomySimulator.WPF.ViewModels.Map;
 

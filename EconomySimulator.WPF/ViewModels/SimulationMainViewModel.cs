@@ -90,7 +90,7 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
     private async void NewSimulationConfiguration()
     {
         var dialog = _dialogService.GetDialogControl();
-        dialog.Content = new NewSimulationConfigurationViewModel();
+        dialog.Content = new NewSimulationConfigurationViewModel(_simulationContainerService);
         dialog.ButtonLeftClick += (sender, args) => SaveClosePopup();
         dialog.ButtonRightClick += (sender, args) => ClosePopup();
         

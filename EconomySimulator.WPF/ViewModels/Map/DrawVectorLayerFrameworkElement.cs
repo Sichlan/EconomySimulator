@@ -1,9 +1,6 @@
 using System;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
 using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
 using Mars.Components.Layers;

@@ -79,6 +79,8 @@ public class SimulationContainerService : ISimulationContainerService
     /// <inheritdoc />
     public async Task LoadSimulationConfiguration(SimulationConfig config)
     {
+        AnnihilateSimulation();
+        
         LayerMapping cellsLayer, riversLayer, routesLayer, markersLayer;
 
         if ((cellsLayer = config.LayerMappings.First(x => x.Name == nameof(GisCellsLayer))) == null)
@@ -155,6 +157,14 @@ public class SimulationContainerService : ISimulationContainerService
         CurrentSimulationWorkflowState = Simulation.PrepareSimulation(ModelDescription, SimulationConfiguration);
         
         OnSimulationInitiated?.Invoke(this);
+    }
+
+    public void AnnihilateSimulation()
+    {
+        SimulationConfiguration = null;
+        Simulation = null;
+        ModelDescription = null;
+        CurrentSimulationWorkflowState = null;
     }
 
     private ModelDescription InitModelDescription()
