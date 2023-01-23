@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace EconomySimulator.WPF.ExtensionMethods.HostBuilders;
 
@@ -16,6 +17,12 @@ public static class AddConfigurationHostBuilderExtensions
             {
                 config.AddJsonFile("appsettings.json", true, true);
                 config.AddEnvironmentVariables();
+            })
+            .ConfigureLogging(builder =>
+            {
+                // TODO: Add dedicated logger
+                builder.ClearProviders();
+                builder.AddDebug();
             });
 
         return hostBuilder;

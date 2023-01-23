@@ -53,6 +53,7 @@ public class ZipFileService : IZipFileService
             File.Copy(markersLayer, markersPath + "\\markers.geojson");
 
             Directory.CreateDirectory(outputDirectory);
+            File.Delete(fileName);
             ZipFile.CreateFromDirectory(basePath, fileName);
         }
         catch (Exception e)
@@ -72,7 +73,9 @@ public class ZipFileService : IZipFileService
 
         try
         {
-            Directory.Delete(outputPath, true);
+            if(Directory.Exists(outputPath))
+                Directory.Delete(outputPath, true);
+            
             Directory.CreateDirectory(outputPath);
             ZipFile.ExtractToDirectory(fileName, outputPath);
         }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
@@ -16,12 +19,56 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
     [ObservableProperty] private string? _gisRiversLayerFilePath;
     [ObservableProperty] private string? _gisRoutesLayerFilePath;
     [ObservableProperty] private string? _gisMarkersLayerFilePath;
+    
+    private readonly string _outputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\EconomySimulator\\Configurations\\Active";
 
     public RelayCommand<GisLayerTypeEnum> SelectFilePathCommand { get; }
 
     public NewSimulationConfigurationViewModel()
     {
         SelectFilePathCommand = new RelayCommand<GisLayerTypeEnum>(ExecuteSelectFilePathCommand);
+    }
+
+    [Localizable(false)]
+    public void PrepareFiles()
+    {
+        if (Directory.Exists(_outputDirectory))
+            Directory.Delete(_outputDirectory, true);
+        
+        string cellsFilePath = _outputDirectory + "\\cells\\cells.geojson",
+            riversFilePath = _outputDirectory + "\\rivers\\rivers.geojson",
+            routesFilePath = _outputDirectory + "\\routes\\routes.geojson",
+            markersFilePath = _outputDirectory + "\\markers\\markers.geojson";
+        
+        Directory.CreateDirectory(Path.GetDirectoryName(cellsFilePath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(riversFilePath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(routesFilePath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(markersFilePath)!);
+
+        if (string.IsNullOrWhiteSpace(GisCellsLayerFilePath)
+            || string.IsNullOrWhiteSpace(GisRiversLayerFilePath)
+            || string.IsNullOrWhiteSpace(GisRoutesLayerFilePath)
+            || string.IsNullOrWhiteSpace(GisMarkersLayerFilePath))
+            throw new FileNotFoundException($"A layer's path was empty or null!" +
+                                            $"\n cells: {GisCellsLayerFilePath}" +
+                                            $"\n rivers: {GisRiversLayerFilePath}" +
+                                            $"\n routes: {GisRoutesLayerFilePath}" +
+                                            $"\n markers: {GisMarkersLayerFilePath}");
+
+        if (!File.Exists(GisCellsLayerFilePath)
+            || !File.Exists(GisRiversLayerFilePath)
+            || !File.Exists(GisRoutesLayerFilePath)
+            || !File.Exists(GisMarkersLayerFilePath))
+            throw new FileNotFoundException($"A layer's file could not be found!" +
+                                            $"\n cells: {GisCellsLayerFilePath}" +
+                                            $"\n rivers: {GisRiversLayerFilePath}" +
+                                            $"\n routes: {GisRoutesLayerFilePath}" +
+                                            $"\n markers: {GisMarkersLayerFilePath}");
+        
+        File.Copy(GisCellsLayerFilePath, cellsFilePath);
+        File.Copy(GisRiversLayerFilePath, riversFilePath);
+        File.Copy(GisRoutesLayerFilePath, routesFilePath);
+        File.Copy(GisMarkersLayerFilePath, markersFilePath);
     }
 
     private void ExecuteSelectFilePathCommand(GisLayerTypeEnum gisLayerTypeEnum)
@@ -58,8 +105,11 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
         }
     }
 
+    [Localizable(false)]
     public SimulationConfig ToSimulationConfig()
     {
+        PrepareFiles();
+        
         return new SimulationConfig
         {
             Globals = new Globals
@@ -78,22 +128,22 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
                 new()
                 {
                     Name = nameof(GisCellsLayer),
-                    File = GisCellsLayerFilePath
+                    File = _outputDirectory + "\\cells\\cells.geojson"
                 },
                 new()
                 {
                     Name = nameof(GisRiverLayer),
-                    File = GisRiversLayerFilePath
+                    File = _outputDirectory + "\\rivers\\rivers.geojson"
                 },
                 new()
                 {
                     Name = nameof(GisRoutesLayer),
-                    File = GisRoutesLayerFilePath
+                    File = _outputDirectory + "\\routes\\routes.geojson"
                 },
                 new()
                 {
                     Name = nameof(GisMarkersLayer),
-                    File = GisMarkersLayerFilePath
+                    File = _outputDirectory + "\\markers\\markers.geojson"
                 },
             },
             AgentMappings = new List<AgentMapping>(),

@@ -22,12 +22,14 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
 
     private readonly ISimulationContainerService _simulationContainerService;
     private readonly IDialogService _dialogService;
+    private readonly Random _random;
     [ObservableProperty] private MapMainViewModel? _mapMainViewModel;
 
-    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, IDialogService dialogService)
+    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, IDialogService dialogService, Random random)
     {
         _simulationContainerService = simulationContainerService;
         _dialogService = dialogService;
+        _random = random;
 
         NewSimulationConfigurationCommand = new RelayCommand(NewSimulationConfiguration);
         SaveSimulationConfigurationCommand = new RelayCommand(SaveSimulationConfiguration);
@@ -41,7 +43,10 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
         FastForwardSimulationCommand = new AsyncRelayCommand(FastForwardSimulation, CanFastForwardSimulation);
         RestartSimulationCommand = new AsyncRelayCommand(RestartSimulation, CanRestartSimulation);
 
-        _simulationContainerService.OnSimulationConfigChanged += _ => CommandManager.InvalidateRequerySuggested();
+        _simulationContainerService.OnSimulationConfigChanged += _ =>
+        {
+            CommandManager.InvalidateRequerySuggested();
+        };
     }
 
     #region Navigation
@@ -54,7 +59,7 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
 
     private void InitializeViewModel()
     {
-        MapMainViewModel = new MapMainViewModel(_simulationContainerService);
+        MapMainViewModel = new MapMainViewModel(_simulationContainerService, _random);
 
         if (!Directory.Exists(_standardConfigurationFilePath))
             Directory.CreateDirectory(_standardConfigurationFilePath);

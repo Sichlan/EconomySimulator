@@ -5,9 +5,9 @@ namespace EconomySimulator.WPF.ViewModels.Map;
 
 public class VectorFeatureDrawingVisual : DrawingVisual
 {
-    public IVectorFeature VectorFeature { get; set; }
+    public IVectorFeature? VectorFeature { get; set; }
 
-    public VectorFeatureDrawingVisual(IVectorFeature vectorFeature)
+    public VectorFeatureDrawingVisual(IVectorFeature? vectorFeature)
     {
         VectorFeature = vectorFeature;
     }

@@ -1,4 +1,5 @@
-﻿using EconomySimulator.BusinessLogic.Services.FileServices;
+﻿using System;
+using EconomySimulator.BusinessLogic.Services.FileServices;
 using EconomySimulator.BusinessLogic.Services.SimulationServices;
 using EconomySimulator.WPF.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ public static class AddServicesHostBuilderExtension
             services.AddSingleton<ISimulationContainerService, SimulationContainerService>();
             services.AddSingleton<IZipFileService, ZipFileService>();
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<Random>();
         });
     }
 }

@@ -1,152 +1,142 @@
-﻿using System;
+using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
 using Mars.Components.Layers;
 using Mars.Interfaces.Layers;
+using NetTopologySuite.Geometries;
+using Point = System.Windows.Point;
 
 namespace EconomySimulator.WPF.ViewModels.Map;
 
-public abstract class DrawVectorLayerFrameworkElement : FrameworkElement { }
-
-public class DrawVectorLayerFrameworkElement<T> : DrawVectorLayerFrameworkElement where T : VectorLayer
+public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement where T : VectorLayer
 {
     private readonly Func<T, Brush> _colourVectorPredicate;
-    private readonly Func<IVectorFeature, bool> _skipVectorPredicate;
-    private readonly VisualCollection _visualCollection;
-    private T? _gisVectorLayer;
+    private T? _gisLayer;
 
-    public DrawVectorLayerFrameworkElement(T gisVectorLayer, Func<T, Brush> colourVectorPredicate, Func<IVectorFeature, bool> skipVectorPredicate) : this()
+    public DrawVectorLayerFrameworkElement(T gisVectorLayer, double outerXMin, double outerXMax, double outerYMin, double outerYMax, Func<T, Brush> colourVectorPredicate, Func<IVectorFeature, bool> skipVectorPredicate) 
+        : base(outerXMin, outerXMax, outerYMin, outerYMax, skipVectorPredicate)
     {
         _colourVectorPredicate = colourVectorPredicate;
-        _skipVectorPredicate = skipVectorPredicate;
         Loaded += async (_, _) =>
         {
             await SetGisVectorLayerAsync(gisVectorLayer);
         };
     }
-    
-    public DrawVectorLayerFrameworkElement()
-    {
-        _visualCollection = new VisualCollection(this);
-
-        _colourVectorPredicate ??= _ => Brushes.White;
-        _skipVectorPredicate ??= _ => false;
-        
-        MouseUp += OnMouseUp;
-        MouseWheel += OnMouseWheel;
-    }
-
-    private void OnMouseWheel(object sender, MouseWheelEventArgs e)
-    {
-        
-    }
-
-    private void OnMouseUp(object sender, MouseButtonEventArgs e)
-    {
-        if (sender is UIElement element)
-        {
-            var point = e.GetPosition(element);
-            VisualTreeHelper.HitTest(this, null, HitTestResultCallback, new PointHitTestParameters(point));
-        }
-    }
-
-    private HitTestResultBehavior HitTestResultCallback(HitTestResult result)
-    {
-        if (result is PointHitTestResult {VisualHit: VectorFeatureDrawingVisual vectorFeatureDrawingVisual} pointHit)
-        {
-            using (var visualContext = vectorFeatureDrawingVisual.RenderOpen())
-            {
-                var text = "lol";
-                var formattedText = new FormattedText(text,
-                    CultureInfo.InvariantCulture,
-                    FlowDirection.LeftToRight,
-                    new Typeface("ComicSans"),
-                    20,
-                    Brushes.Black); 
-                visualContext.DrawText(formattedText, pointHit.PointHit);
-            }
-        }
-
-        return HitTestResultBehavior.Stop;
-    }
 
     private async Task SetGisVectorLayerAsync(T gisVectorLayer)
     {
-        _gisVectorLayer = gisVectorLayer;
-        await RenderGisVectorLayerAsync();
+        _gisLayer = gisVectorLayer;
+        await RenderGisLayerAsync();
     }
 
-    private async Task RenderGisVectorLayerAsync()
+    protected override async Task RenderGisLayerAsync()
     {
-        if (_gisVectorLayer == null)
+        if (_gisLayer == null)
             return;
-        
+
         await Task.Yield();
+        
+        // the outer min / max fields are already set as base corner points for the canvas
+        // calculate inner min / max:
 
-        double xMin = _gisVectorLayer.Features.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.X)),
-            xMax = _gisVectorLayer.Features.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.X)),
-            yMin = _gisVectorLayer.Features.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.Y)),
-            yMax = _gisVectorLayer.Features.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.Y));
-
-        double scaleFactorX = ActualWidth / (xMax - xMin),
-            scaleFactorY = ActualHeight / (yMax - yMin),
+        double innerXMin = _gisLayer.Features.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.X)),
+            innerXMax = _gisLayer.Features.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.X)),
+            innerYMin = _gisLayer.Features.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.Y)),
+            innerYMax = _gisLayer.Features.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.Y));
+        
+        // calculate scale factor to properly align the canvas
+        double scaleFactorX = ActualWidth / (OuterXMax - OuterXMin),
+            scaleFactorY = ActualHeight / (OuterYMax - OuterYMin),
             scaleFactor = Math.Min(scaleFactorX, scaleFactorY);
         
-        var xDifference = 0 - xMin;
-        var yDifference = 0 - yMin;
+        // calculate new origin point because gis files reach into negative values, while canvas only allows positives
+        var xDifference = 0 - OuterXMin;
+        var yDifference = 0 - OuterYMin;
         
-        foreach (var vectorFeature in _gisVectorLayer.Features)
+        // iterate through all vector features in the current layer
+        foreach (var vectorFeature in _gisLayer.Features)
         {
-            if(_skipVectorPredicate.Invoke(vectorFeature))
+            // Invoke the skip predicate to see if the vector should be drawn or not.
+            // A return value of true means the vector should be skipped
+            if(SkipVectorPredicate.Invoke(vectorFeature))
                 continue;
                 
+            // Instantiate a new VectorFeatureDrawingVisual that can provide a drawing context
             var vectorFeatureDrawingVisual = new VectorFeatureDrawingVisual(vectorFeature);
-
+            var streamGeometry = new StreamGeometry();
+            
+            // Activate the drawing and geometry contexts to draw the vector
             using (var drawingContext = vectorFeatureDrawingVisual.RenderOpen())
+            using (var geometryContext = streamGeometry.Open())
             {
-                var streamGeometry = new StreamGeometry();
+                // Find the first coordinate to start the figure at:
+                var firstCoordinate = vectorFeature.VectorStructured.Geometry.Coordinates.First();
+                
+                geometryContext.BeginFigure(CalculatePoint(firstCoordinate, xDifference, yDifference, scaleFactor), true, true);
 
-                using (var geometryContext = streamGeometry.Open())
+                var points = new PointCollection();
+                foreach (var geometryCoordinate in vectorFeature.VectorStructured.Geometry.Coordinates.Skip(1))
                 {
-                    var firstCoordinate = vectorFeature.VectorStructured.Geometry.Coordinates.First(); 
-                    geometryContext.BeginFigure(new Point((firstCoordinate.X + xDifference) * scaleFactor, ActualHeight-((firstCoordinate.Y + yDifference) * scaleFactor)), true, true);
-
-                    var points = new PointCollection();
-                    foreach (var geometryCoordinate in vectorFeature.VectorStructured.Geometry.Coordinates.Skip(1))
-                    {
-                        points.Add(new Point((geometryCoordinate.X + xDifference) * scaleFactor, ActualHeight-((geometryCoordinate.Y + yDifference) * scaleFactor)));
-                    }
-                    geometryContext.PolyLineTo(points, true, true);
+                    points.Add(CalculatePoint(geometryCoordinate, xDifference, yDifference, scaleFactor));
                 }
+                geometryContext.PolyLineTo(points, true, true);
 
-                drawingContext.DrawGeometry(_colourVectorPredicate.Invoke(_gisVectorLayer), null, streamGeometry);
+                drawingContext.DrawGeometry(_colourVectorPredicate.Invoke(_gisLayer), null, streamGeometry);
             }
 
-            _visualCollection.Add(vectorFeatureDrawingVisual);
+            VisualCollection.Add(vectorFeatureDrawingVisual);
         }
+        
+        
+                
+        var vectorFeatureDrawingVisual1 = new VectorFeatureDrawingVisual(null);
+
+        using (var drawingContext = vectorFeatureDrawingVisual1.RenderOpen())
+        {
+            var streamGeometry = new StreamGeometry();
+
+            using (var geometryContext = streamGeometry.Open())
+            {
+                // Top Left
+                geometryContext.BeginFigure(CalculatePoint(new Coordinate(innerXMin, innerYMin), xDifference, yDifference, scaleFactor),
+                    true,
+                    true);
+
+                var points = new PointCollection
+                {
+                    // Bottom Left
+                    CalculatePoint(new Coordinate(innerXMin, innerYMax), xDifference, yDifference, scaleFactor),
+                    
+                    // Bottom Right
+                    CalculatePoint(new Coordinate(innerXMax, innerYMax), xDifference, yDifference, scaleFactor),
+                    
+                    // Top Right
+                    CalculatePoint(new Coordinate(innerXMax, innerYMin), xDifference, yDifference, scaleFactor),
+                };
+
+                geometryContext.PolyLineTo(points, true, true);
+            }
+
+            drawingContext.DrawGeometry(Brushes.Transparent, new Pen(_gisLayer is GisCellsLayer ? Brushes.Red : Brushes.DeepPink, 5), streamGeometry);
+        }
+
+        VisualCollection.Add(vectorFeatureDrawingVisual1);
         
         UpdateLayout();
     }
 
-    protected override Visual GetVisualChild(int index)
+    private Point CalculatePoint(Coordinate coordinate, double xDifference, double yDifference, double scaleFactor)
     {
-        if (index < 0 || index >= _visualCollection.Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
+        double
+            //X: 
+            x = (coordinate.X + xDifference) * scaleFactor,
+            y = ActualHeight - (coordinate.Y + yDifference) * scaleFactor;
         
-        return _visualCollection[index];
-    }
-    
-    protected override int VisualChildrenCount
-    {
-        get
-        {
-            return _visualCollection.Count;
-        }
+        return new Point(x, y);
     }
 }
