@@ -1,10 +1,17 @@
-using System.Diagnostics;
 using System.IO.Compression;
+using Microsoft.Extensions.Logging;
 
 namespace EconomySimulator.BusinessLogic.Services.FileServices;
 
 public class ZipFileService : IZipFileService
 {
+    private readonly ILogger<ZipFileService> _logger;
+
+    public ZipFileService(ILogger<ZipFileService> logger)
+    {
+        _logger = logger;
+    }
+
     /// <inheritdoc/>
     public void CreateZipFile(string fileName, IEnumerable<string> files)
     {
@@ -48,8 +55,8 @@ public class ZipFileService : IZipFileService
             await File.WriteAllTextAsync(configPath, configJson);
 
             File.Copy(cellsLayer, cellsPath + "\\cells.geojson");
-            File.Copy(routesLayer, riversPath + "\\rivers.geojson");
-            File.Copy(riversLayer, routesPath + "\\routes.geojson");
+            File.Copy(riversLayer, riversPath + "\\rivers.geojson");
+            File.Copy(routesLayer, routesPath + "\\routes.geojson");
             File.Copy(markersLayer, markersPath + "\\markers.geojson");
 
             Directory.CreateDirectory(outputDirectory);
@@ -58,7 +65,7 @@ public class ZipFileService : IZipFileService
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e);
+            _logger.LogError(e, "Error in {Method}", nameof(CreateSimulationConfigurationArchive));
         }
         finally
         {
@@ -81,7 +88,7 @@ public class ZipFileService : IZipFileService
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e);
+            _logger.LogError(e, "Error in {Method}", nameof(ReadSimulationConfigurationArchive));
         }
     }
 }

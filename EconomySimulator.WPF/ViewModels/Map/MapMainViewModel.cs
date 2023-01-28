@@ -9,6 +9,7 @@ using EconomySimulator.BusinessLogic.Services.SimulationServices;
 using Mars.Components.Layers;
 using Mars.Core.Executor.Implementation;
 using Mars.Interfaces.Layers;
+using Microsoft.Extensions.Logging;
 
 namespace EconomySimulator.WPF.ViewModels.Map;
 
@@ -19,15 +20,19 @@ public partial class MapMainViewModel
     
     [ObservableProperty] private ObservableCollection<DrawLayerFrameworkElement> _layerFrameworkElements;
     [ObservableProperty] private bool _isLoading;
-    private Random _random;
+    private readonly Random _random;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> _cellsLayerLogger;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> _riversLayerLogger;
 
     public event Action<MapMainViewModel> OnMapUpdated;
 
-    public MapMainViewModel(ISimulationContainerService simulationContainerService, Random random)
+    public MapMainViewModel(ISimulationContainerService simulationContainerService, Random random, ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger)
     {
         LayerFrameworkElements = new();
         _simulationContainerService = simulationContainerService;
         _random = random;
+        _cellsLayerLogger = cellsLayerLogger;
+        _riversLayerLogger = riversLayerLogger;
 
         _simulationContainerService.OnSimulationInitiated += SimulationContainerServiceOnOnSimulationInitiated;
         _simulationContainerService.OnSimulationStep += SimulationContainerServiceOnOnSimulationStep;
@@ -62,15 +67,19 @@ public partial class MapMainViewModel
                         case GisCellsLayer gisCellsLayer:
                             LayerFrameworkElements.Add(new DrawVectorLayerFrameworkElement<GisCellsLayer>(gisCellsLayer,
                                 xMin, xMax, yMin, yMax,
-                                _ => Brushes.PaleGreen, 
-                                x => CellsLayerFilter(x)));
+                                _cellsLayerLogger,
+                                x => CellsLayerFilter(x),
+                                x => CellsLayerFillBrush(x),
+                                x => CellsLayerPen(x)));
 
                             break;
                         case GisRiverLayer gisRiverLayer:
                             LayerFrameworkElements.Add(new DrawVectorLayerFrameworkElement<GisRiverLayer>(gisRiverLayer,
                                 xMin, xMax, yMin, yMax, 
-                                _ => RandomBrush(), 
-                                x => RiverLayerFilter(x)));
+                                _riversLayerLogger,
+                                x => RiverLayerFilter(x),
+                                x => RiverLayerFillBrush(x),
+                                x => RiverLayerPen(x)));
 
                             break;
                     }
@@ -85,7 +94,15 @@ public partial class MapMainViewModel
         }
     }
 
+    #region rivers predicates
+
+    private Pen RiverLayerPen(IVectorFeature vectorFeature)
+    {
+        return new Pen(RandomBrush(), 1);
+    }
+
     public List<IVectorFeature> lol = new List<IVectorFeature>();
+
     private bool RiverLayerFilter(IVectorFeature vectorFeature)
     {
         lol.Add(vectorFeature);
@@ -93,10 +110,31 @@ public partial class MapMainViewModel
         return vectorFeature.VectorStructured.Data.TryGetValue("type", out var value) ? value.ToString() != "island" : false;
     }
 
+    private Brush RiverLayerFillBrush(IVectorFeature vectorFeature)
+    {
+        return Brushes.Transparent;
+    }
+
+    #endregion
+
+    #region cells predicates
+
+    private Pen CellsLayerPen(IVectorFeature vectorFeature)
+    {
+        return new Pen(Brushes.PaleGreen, 0.5);
+    }
+
     private bool CellsLayerFilter(IVectorFeature vectorFeature)
     {
         return vectorFeature.VectorStructured.Data.TryGetValue("type", out var value) ? value.ToString() != "island" : false;
     }
+
+    private Brush CellsLayerFillBrush(IVectorFeature vectorFeature)
+    {
+        return Brushes.PaleGreen;
+    }
+
+    #endregion
 
     private Brush RandomBrush()
     {

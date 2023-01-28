@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Mars.Interfaces.Layers;
+using Microsoft.Extensions.Logging;
 
 namespace EconomySimulator.WPF.ViewModels.Map;
 
@@ -15,34 +16,39 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
     internal readonly double OuterXMax;
     internal readonly double OuterYMin;
     internal readonly double OuterYMax;
-    internal readonly Func<IVectorFeature, bool> SkipVectorPredicate;
+    internal readonly Func<IVectorFeature, bool> VectorSkipPredicate;
+    internal readonly Func<IVectorFeature, Brush> VectorFillColourPredicate;
+    internal readonly Func<IVectorFeature, Pen> VectorPenPredicate;
     internal readonly VisualCollection VisualCollection;
-    
-    public DrawLayerFrameworkElement(double outerXMin, double outerXMax, double outerYMin, double outerYMax, Func<IVectorFeature, bool> skipVectorPredicate) : this()
+    internal readonly ILogger<DrawLayerFrameworkElement> Logger;
+
+    public DrawLayerFrameworkElement(double outerXMin, double outerXMax, double outerYMin, double outerYMax, Func<IVectorFeature,bool> vectorSkipPredicate, Func<IVectorFeature, Brush> vectorFillColourPredicate, Func<IVectorFeature, Pen> vectorPenPredicate, ILogger<DrawLayerFrameworkElement> logger) 
+        : this(vectorSkipPredicate, vectorFillColourPredicate, vectorPenPredicate, logger)
     {
         OuterXMin = outerXMin;
         OuterXMax = outerXMax;
         OuterYMin = outerYMin;
         OuterYMax = outerYMax;
-        SkipVectorPredicate = skipVectorPredicate;
     }
     
-    public DrawLayerFrameworkElement()
+    public DrawLayerFrameworkElement(Func<IVectorFeature,bool> vectorSkipPredicate, Func<IVectorFeature, Brush> vectorFillColourPredicate, Func<IVectorFeature, Pen> vectorPenPredicate, ILogger<DrawLayerFrameworkElement> logger)
     {
+        VectorSkipPredicate = vectorSkipPredicate;
+        VectorFillColourPredicate = vectorFillColourPredicate;
+        VectorPenPredicate = vectorPenPredicate;
+        Logger = logger;
         VisualCollection = new VisualCollection(this);
-
-        SkipVectorPredicate ??= _ => false;
         
         MouseUp += OnMouseUp;
         MouseWheel += OnMouseWheel;
     }
 
-    private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+    protected void OnMouseWheel(object sender, MouseWheelEventArgs e)
     {
         
     }
 
-    private void OnMouseUp(object sender, MouseButtonEventArgs e)
+    protected void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
         if (sender is UIElement element)
         {
@@ -52,10 +58,13 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
     }
 
     [Localizable(false)]
-    private HitTestResultBehavior HitTestResultCallback(HitTestResult result)
+    protected HitTestResultBehavior HitTestResultCallback(HitTestResult result)
     {
+        // TODO: Add useful content in here
         if (result is PointHitTestResult {VisualHit: VectorFeatureDrawingVisual vectorFeatureDrawingVisual} pointHit)
         {
+            Logger.LogDebug("vectordrawingfeature: {@VectorFeatureDrawingVisual}", vectorFeatureDrawingVisual);
+            
             using (var visualContext = vectorFeatureDrawingVisual.RenderOpen())
             {
                 var text = "lol";
@@ -70,14 +79,6 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
         }
 
         return HitTestResultBehavior.Stop;
-    }
-
-    protected double GetBorderDistance(double outerMin, double outerMax, double innerMin, double innerMax)
-    {
-        var outerDistance = outerMax - outerMin;
-        var innerDistance = innerMax - innerMin;
-
-        return (outerDistance - innerDistance) / 2;
     }
     
     protected abstract Task RenderGisLayerAsync();

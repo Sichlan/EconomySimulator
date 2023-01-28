@@ -162,9 +162,9 @@ public class SimulationContainerService : ISimulationContainerService
     public void AnnihilateSimulation()
     {
         SimulationConfiguration = null;
-        Simulation = null;
+        Simulation?.Dispose();
         ModelDescription = null;
-        CurrentSimulationWorkflowState = null;
+        CurrentSimulationWorkflowState?.Dispose();
     }
 
     private ModelDescription InitModelDescription()

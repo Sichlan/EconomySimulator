@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
 using EconomySimulator.BusinessLogic.Services.SimulationServices;
 using EconomySimulator.WPF.ViewModels.Map;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Wpf.Ui.Common.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
@@ -24,12 +26,16 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
     private readonly IDialogService _dialogService;
     private readonly Random _random;
     [ObservableProperty] private MapMainViewModel? _mapMainViewModel;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> _cellsLayerLogger;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> _riversLayerLogger;
 
-    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, IDialogService dialogService, Random random)
+    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, IDialogService dialogService, Random random, ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger)
     {
         _simulationContainerService = simulationContainerService;
         _dialogService = dialogService;
         _random = random;
+        _cellsLayerLogger = cellsLayerLogger;
+        _riversLayerLogger = riversLayerLogger;
 
         NewSimulationConfigurationCommand = new RelayCommand(NewSimulationConfiguration);
         SaveSimulationConfigurationCommand = new RelayCommand(SaveSimulationConfiguration);
@@ -59,7 +65,7 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
 
     private void InitializeViewModel()
     {
-        MapMainViewModel = new MapMainViewModel(_simulationContainerService, _random);
+        MapMainViewModel = new MapMainViewModel(_simulationContainerService, _random, _cellsLayerLogger, _riversLayerLogger);
 
         if (!Directory.Exists(_standardConfigurationFilePath))
             Directory.CreateDirectory(_standardConfigurationFilePath);
