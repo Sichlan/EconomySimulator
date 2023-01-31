@@ -21,18 +21,27 @@ public partial class MapMainViewModel
     [ObservableProperty] private ObservableCollection<DrawLayerFrameworkElement> _layerFrameworkElements;
     [ObservableProperty] private bool _isLoading;
     private readonly Random _random;
+    private readonly ILogger<MapMainViewModel> _logger;
     private readonly ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> _cellsLayerLogger;
     private readonly ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> _riversLayerLogger;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisRoutesLayer>> _routesLayerLogger;
 
-    public event Action<MapMainViewModel> OnMapUpdated;
+    public event Action<MapMainViewModel>? OnMapUpdated;
 
-    public MapMainViewModel(ISimulationContainerService simulationContainerService, Random random, ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger)
+    public MapMainViewModel(ISimulationContainerService simulationContainerService, 
+        Random random, 
+        ILogger<MapMainViewModel> logger,
+        ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, 
+        ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger, 
+        ILogger<DrawVectorLayerFrameworkElement<GisRoutesLayer>> routesLayerLogger)
     {
-        LayerFrameworkElements = new();
+        _layerFrameworkElements = new();
         _simulationContainerService = simulationContainerService;
         _random = random;
+        _logger = logger;
         _cellsLayerLogger = cellsLayerLogger;
         _riversLayerLogger = riversLayerLogger;
+        _routesLayerLogger = routesLayerLogger;
 
         _simulationContainerService.OnSimulationInitiated += SimulationContainerServiceOnOnSimulationInitiated;
         _simulationContainerService.OnSimulationStep += SimulationContainerServiceOnOnSimulationStep;
@@ -46,7 +55,7 @@ public partial class MapMainViewModel
     private void SimulationContainerServiceOnOnSimulationInitiated(ISimulationContainerService sender)
     {
         IsLoading = true;
-        
+
         try
         {
             if (sender.CurrentSimulationWorkflowState?.Model is RuntimeModelImpl runtimeModelImpl)
@@ -54,12 +63,12 @@ public partial class MapMainViewModel
                 var allFeatures = runtimeModelImpl.AllLayers
                     .SelectMany(x => x is VectorLayer vectorLayer ? vectorLayer.Features : Enumerable.Empty<IVectorFeature>())
                     .ToList();
-                
+
                 double xMin = allFeatures.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.X)),
                     xMax = allFeatures.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.X)),
                     yMin = allFeatures.Min(x => x.VectorStructured.Geometry.Coordinates.Min(y => y.Y)),
                     yMax = allFeatures.Max(x => x.VectorStructured.Geometry.Coordinates.Max(y => y.Y));
-                
+
                 foreach (var layer in runtimeModelImpl.AllLayers)
                 {
                     switch (layer)
@@ -75,18 +84,32 @@ public partial class MapMainViewModel
                             break;
                         case GisRiverLayer gisRiverLayer:
                             LayerFrameworkElements.Add(new DrawVectorLayerFrameworkElement<GisRiverLayer>(gisRiverLayer,
-                                xMin, xMax, yMin, yMax, 
+                                xMin, xMax, yMin, yMax,
                                 _riversLayerLogger,
                                 x => RiverLayerFilter(x),
                                 x => RiverLayerFillBrush(x),
                                 x => RiverLayerPen(x)));
 
                             break;
+                        
+                        case GisRoutesLayer gisRoutesLayer:
+                            LayerFrameworkElements.Add(new DrawVectorLayerFrameworkElement<GisRoutesLayer>(gisRoutesLayer,
+                                xMin, xMax, yMin, yMax,
+                                _routesLayerLogger,
+                                x => RiverLayerFilter(x),
+                                x => RiverLayerFillBrush(x),
+                                x => RiverLayerPen(x)));
+                        
+                            break;
                     }
                 }
             }
-        
+
             UpdateLayout();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in {Method}", nameof(SimulationContainerServiceOnOnSimulationInitiated));
         }
         finally
         {

@@ -12,10 +12,10 @@ public static class AddViewsHostBuilderExtension
     {
         hostBuilder.ConfigureServices(services =>
         {
-            services.AddScoped<INavigationWindow, MainWindow>();
-            services.AddScoped<SettingsView>();
-            services.AddScoped<TestView>();
-            services.AddScoped<SimulationMainView>();
+            services.AddSingleton<INavigationWindow, MainWindow>();
+            services.AddSingleton<SettingsView>();
+            services.AddSingleton<TestView>();
+            services.AddSingleton<SimulationMainView>();
         });
 
         return hostBuilder;

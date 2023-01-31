@@ -10,12 +10,9 @@ namespace EconomySimulator.WPF.Views.Windows;
 
 public partial class MainWindow : INavigationWindow
 {
-    private readonly IDialogService _dialogService;
-    private ContentPresenter? _contentPresenter;
     public MainWindowViewModel ViewModel { get; }
     public MainWindow(MainWindowViewModel viewModel, IPageService pageService, INavigationService navigationService, IDialogService dialogService)
     {
-        _dialogService = dialogService;
         ViewModel = viewModel;
         DataContext = this;
         
@@ -27,7 +24,7 @@ public partial class MainWindow : INavigationWindow
         Loaded += (_, _) =>
         {
             Navigate(typeof(SimulationMainView));
-            _dialogService.SetDialogControl(RootDialog);
+            dialogService.SetDialogControl(RootDialog);
         };
     }
 

@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.IO;
+using System.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace EconomySimulator.WPF.ExtensionMethods.HostBuilders;
 
@@ -13,16 +16,20 @@ public static class AddConfigurationHostBuilderExtensions
             {
                 builder.AddCommandLine(args);
             })
-            .ConfigureAppConfiguration((_, config) =>
+            .ConfigureAppConfiguration((context, config) =>
             {
                 config.AddJsonFile("appsettings.json", true, true);
+                config.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true);
                 config.AddEnvironmentVariables();
             })
-            .ConfigureLogging(builder =>
+            .UseSerilog((host, loggerConfiguration) =>
             {
-                // TODO: Add dedicated logger
-                builder.ClearProviders();
-                builder.AddDebug();
+                var outputTemplate = "{Timestamp} [{Level}] ({HttpRequestId}|{UserName}) {Message}{NewLine}{Exception}";
+
+                loggerConfiguration.Enrich.FromLogContext()
+                    .ReadFrom.Configuration(host.Configuration)
+                    .WriteTo.File("\\Logs\\log.txt", rollingInterval: RollingInterval.Day, outputTemplate: outputTemplate)
+                    .WriteTo.Debug(outputTemplate: outputTemplate);
             });
 
         return hostBuilder;

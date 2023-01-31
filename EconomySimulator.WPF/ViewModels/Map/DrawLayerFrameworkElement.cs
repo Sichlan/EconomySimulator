@@ -20,7 +20,7 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
     internal readonly Func<IVectorFeature, Brush> VectorFillColourPredicate;
     internal readonly Func<IVectorFeature, Pen> VectorPenPredicate;
     internal readonly VisualCollection VisualCollection;
-    internal readonly ILogger<DrawLayerFrameworkElement> Logger;
+    private readonly ILogger<DrawLayerFrameworkElement> _logger;
 
     public DrawLayerFrameworkElement(double outerXMin, double outerXMax, double outerYMin, double outerYMax, Func<IVectorFeature,bool> vectorSkipPredicate, Func<IVectorFeature, Brush> vectorFillColourPredicate, Func<IVectorFeature, Pen> vectorPenPredicate, ILogger<DrawLayerFrameworkElement> logger) 
         : this(vectorSkipPredicate, vectorFillColourPredicate, vectorPenPredicate, logger)
@@ -36,11 +36,17 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
         VectorSkipPredicate = vectorSkipPredicate;
         VectorFillColourPredicate = vectorFillColourPredicate;
         VectorPenPredicate = vectorPenPredicate;
-        Logger = logger;
+        _logger = logger;
         VisualCollection = new VisualCollection(this);
         
         MouseUp += OnMouseUp;
         MouseWheel += OnMouseWheel;
+        Loaded += OnLoaded;
+    }
+
+    protected async void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        await RenderGisLayerAsync();
     }
 
     protected void OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -57,13 +63,12 @@ public abstract class DrawLayerFrameworkElement : FrameworkElement
         }
     }
 
-    [Localizable(false)]
     protected HitTestResultBehavior HitTestResultCallback(HitTestResult result)
     {
         // TODO: Add useful content in here
         if (result is PointHitTestResult {VisualHit: VectorFeatureDrawingVisual vectorFeatureDrawingVisual} pointHit)
         {
-            Logger.LogDebug("vectordrawingfeature: {@VectorFeatureDrawingVisual}", vectorFeatureDrawingVisual);
+            _logger.LogDebug("vectorFeatureDrawingVisual: {@VectorFeatureDrawingVisual}", vectorFeatureDrawingVisual);
             
             using (var visualContext = vectorFeatureDrawingVisual.RenderOpen())
             {

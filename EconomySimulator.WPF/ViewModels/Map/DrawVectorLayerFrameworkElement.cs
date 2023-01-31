@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using EconomySimulator.BusinessLogic.Models.Simulation.Layers;
 using Mars.Components.Layers;
+using Mars.Interfaces.Data;
 using Mars.Interfaces.Layers;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
@@ -23,16 +24,7 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
     public DrawVectorLayerFrameworkElement(T gisVectorLayer, double outerXMin, double outerXMax, double outerYMin, double outerYMax, ILogger<DrawVectorLayerFrameworkElement<T>> logger, Func<IVectorFeature, bool> vectorSkipPredicate, Func<IVectorFeature, Brush> vectorFillColourPredicate, Func<IVectorFeature, Pen> vectorPenPredicate) 
         : base(outerXMin, outerXMax, outerYMin, outerYMax, vectorSkipPredicate, vectorFillColourPredicate, vectorPenPredicate, logger)
     {
-        Loaded += async (_, _) =>
-        {
-            await SetGisVectorLayerAsync(gisVectorLayer);
-        };
-    }
-
-    private async Task SetGisVectorLayerAsync(T gisVectorLayer)
-    {
         _gisLayer = gisVectorLayer;
-        await RenderGisLayerAsync();
     }
 
     /// <summary>
@@ -85,7 +77,7 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
                 // Add all other points into a drawable point collection.
                 // Skip the first point, since it is already included in firstCoordinate
                 var points = new PointCollection();
-                foreach (var geometryCoordinate in vectorFeature.VectorStructured.Geometry.Coordinates.Skip(1))
+                foreach (var geometryCoordinate in vectorFeature.VectorStructured.Geometry.Coordinates.Skip(1).SkipLast(_gisLayer is GisCellsLayer ? 0 : 1))
                 {
                     points.Add(CalculatePoint(geometryCoordinate, xDifference, yDifference, scaleFactor));
                 }
@@ -118,10 +110,14 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
     /// <returns></returns>
     private Point CalculatePoint(Coordinate coordinate, double xDifference, double yDifference, double scaleFactor)
     {
+        // Calculate the X and Y center point from
+        double xCenter = (OuterXMax - OuterXMin) / 2 + OuterXMin,
+            yCenter = (OuterYMax - OuterYMin) / 2 + OuterYMin;
+        
         // Calculates the offset from both axis that must be factored in to center all of this layer's points.
         // Done by calculating the canvas' center point, this layer's center point scaled up to the canvas, and then calculate the difference so it can be added to the point.
-        double offsetX = ActualWidth / 2 - ((_innerXMax - _innerXMin) / 2 * scaleFactor),
-            offsetY = ActualHeight / 2 - ((_innerYMax - _innerYMin) / 2 * scaleFactor);
+        double offsetX = ActualWidth / 2 - (xCenter - _innerXMin) * scaleFactor,
+            offsetY = ActualHeight / 2 - (yCenter - _innerYMin) * scaleFactor;
         
         // So, order of operation is:
         // - normalize the coordinate by adding the calculated difference to it
@@ -132,7 +128,7 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
         // subtract the y value from the canvas' height to mirror the layer (again) so it is displayed normal again.
         double
             x = (coordinate.X + xDifference) * scaleFactor + offsetX,
-            y = ActualHeight - (coordinate.Y + yDifference) * scaleFactor - offsetY;
+            y = ActualHeight - ((coordinate.Y + yDifference) * scaleFactor + offsetY);
         
         return new Point(x, y);
     }
@@ -153,7 +149,20 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
     /// <returns>A <see cref="VectorFeatureDrawingVisual"/> that can be added to a canvas.</returns>
     private VectorFeatureDrawingVisual DrawSquare(double innerXMin, double innerYMin, double innerXMax, double innerYMax, double xDifference, double yDifference, double scaleFactor, Brush outlineColour)
     {
-        var vectorFeatureDrawingVisual = new VectorFeatureDrawingVisual(null);
+        var vectorFeatureDrawingVisual = new VectorFeatureDrawingVisual(new VectorFeature()
+        {
+            VectorStructured = new VectorStructuredData()
+            {
+                Geometry = new Polygon(new LinearRing(new[]
+                {
+                    new Coordinate(innerXMin, innerYMin),
+                    new Coordinate(innerXMin, innerYMax),
+                    new Coordinate(innerXMax, innerYMax),
+                    new Coordinate(innerXMax, innerYMin),
+                    new Coordinate(innerXMin, innerYMin),
+                }))
+            }
+        });
         var streamGeometry = new StreamGeometry();
 
         using var drawingContext = vectorFeatureDrawingVisual.RenderOpen();
@@ -190,7 +199,7 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
     /// <returns>A <see cref="VectorFeatureDrawingVisual"/> that can be added to a canvas.</returns>
     private VectorFeatureDrawingVisual DrawDebugCenterPoint(double xDifference, double yDifference, double scaleFactor)
     {
-        return DrawSquare(-1, -1, 1, 1, xDifference, yDifference, scaleFactor, _gisLayer is GisCellsLayer ? Brushes.Aqua : Brushes.DeepPink);
+        return DrawSquare(-1, -1, 1, 1, xDifference, yDifference, scaleFactor, _gisLayer is GisCellsLayer ? Brushes.Aqua : _gisLayer is GisRiverLayer ? Brushes.DeepPink : Brushes.DarkOrange);
     }
 
     /// <summary>
@@ -203,6 +212,6 @@ public class DrawVectorLayerFrameworkElement<T> : DrawLayerFrameworkElement wher
     private VectorFeatureDrawingVisual DrawDebugBorder(double xDifference, double yDifference, double scaleFactor)
     {
         return DrawSquare(_innerXMin, _innerYMin, _innerXMax, _innerYMax, xDifference, yDifference, scaleFactor,
-            _gisLayer is GisCellsLayer ? Brushes.Aqua : Brushes.DeepPink);
+            _gisLayer is GisCellsLayer ? Brushes.Aqua : _gisLayer is GisRiverLayer ? Brushes.DeepPink : Brushes.DarkOrange);
     }
 }

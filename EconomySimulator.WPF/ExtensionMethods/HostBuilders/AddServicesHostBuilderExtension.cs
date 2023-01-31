@@ -15,7 +15,6 @@ public static class AddServicesHostBuilderExtension
     {
         return hostBuilder.ConfigureServices(services =>
         {
-            services.AddHostedService<ApplicationHostService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<IThemeService, ThemeService>();
             services.AddSingleton<ITaskBarService, TaskBarService>();
@@ -24,6 +23,8 @@ public static class AddServicesHostBuilderExtension
             services.AddSingleton<IZipFileService, ZipFileService>();
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<Random>();
+            
+            services.AddHostedService<ApplicationHostService>();
         });
     }
 }

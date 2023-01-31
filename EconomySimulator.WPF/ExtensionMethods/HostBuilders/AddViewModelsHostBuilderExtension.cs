@@ -10,10 +10,10 @@ public static class AddViewModelsHostBuilderExtension
     {
         hostBuilder.ConfigureServices(services =>
         {
-            services.AddScoped<MainWindowViewModel>();
-            services.AddScoped<SettingsViewModel>();
-            services.AddScoped<TestViewModel>();
-            services.AddScoped<SimulationMainViewModel>();
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<TestViewModel>();
+            services.AddSingleton<SimulationMainViewModel>();
         });
 
         return hostBuilder;

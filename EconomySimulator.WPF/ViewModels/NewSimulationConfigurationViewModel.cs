@@ -31,7 +31,6 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
         SelectFilePathCommand = new RelayCommand<GisLayerTypeEnum>(ExecuteSelectFilePathCommand);
     }
 
-    [Localizable(false)]
     public void PrepareFiles()
     {
         _simulationContainerService.AnnihilateSimulation();
@@ -109,7 +108,6 @@ public partial class NewSimulationConfigurationViewModel : ObservableObject
         }
     }
 
-    [Localizable(false)]
     public SimulationConfig ToSimulationConfig()
     {
         PrepareFiles();

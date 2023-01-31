@@ -20,22 +20,33 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
 {
     private bool _isInitialized;
     
-    [Localizable(false)] private readonly string _standardConfigurationFilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\EconomySimulator\\Configurations";
+    private readonly string _standardConfigurationFilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\EconomySimulator\\Configurations";
 
+    [ObservableProperty] private MapMainViewModel? _mapMainViewModel;
+    
     private readonly ISimulationContainerService _simulationContainerService;
     private readonly IDialogService _dialogService;
     private readonly Random _random;
-    [ObservableProperty] private MapMainViewModel? _mapMainViewModel;
+    private readonly ILogger<MapMainViewModel> _mapMainViewModelLogger;
     private readonly ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> _cellsLayerLogger;
     private readonly ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> _riversLayerLogger;
+    private readonly ILogger<DrawVectorLayerFrameworkElement<GisRoutesLayer>> _routesLayerLogger;
 
-    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, IDialogService dialogService, Random random, ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger)
+    public SimulationMainViewModel(ISimulationContainerService simulationContainerService, 
+        IDialogService dialogService, 
+        Random random, 
+        ILogger<MapMainViewModel> mapMainViewModelLogger, 
+        ILogger<DrawVectorLayerFrameworkElement<GisCellsLayer>> cellsLayerLogger, 
+        ILogger<DrawVectorLayerFrameworkElement<GisRiverLayer>> riversLayerLogger, 
+        ILogger<DrawVectorLayerFrameworkElement<GisRoutesLayer>> routesLayerLogger)
     {
         _simulationContainerService = simulationContainerService;
         _dialogService = dialogService;
         _random = random;
         _cellsLayerLogger = cellsLayerLogger;
         _riversLayerLogger = riversLayerLogger;
+        _routesLayerLogger = routesLayerLogger;
+        _mapMainViewModelLogger = mapMainViewModelLogger;
 
         NewSimulationConfigurationCommand = new RelayCommand(NewSimulationConfiguration);
         SaveSimulationConfigurationCommand = new RelayCommand(SaveSimulationConfiguration);
@@ -65,7 +76,7 @@ public partial class SimulationMainViewModel : ObservableObject, INavigationAwar
 
     private void InitializeViewModel()
     {
-        MapMainViewModel = new MapMainViewModel(_simulationContainerService, _random, _cellsLayerLogger, _riversLayerLogger);
+        MapMainViewModel = new MapMainViewModel(_simulationContainerService, _random, _mapMainViewModelLogger, _cellsLayerLogger, _riversLayerLogger, _routesLayerLogger);
 
         if (!Directory.Exists(_standardConfigurationFilePath))
             Directory.CreateDirectory(_standardConfigurationFilePath);
